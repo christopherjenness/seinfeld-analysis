@@ -1,7 +1,18 @@
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
+import pandas as pd
 
 CHARACTERS = ['JERRY', 'GEORGE', 'ELAINE', 'KRAMER']
+SEASONS = {1: range(1, 6),
+           2: range(6, 18),
+           3: range(18, 41),
+           4: range(41, 65),
+           5: range(65, 87),
+           6: range(87, 111),
+           7: range(111, 135),
+           8: range(135, 157),
+           9: range(157, 181)}
+
 
 def make_urls():
     baseurl = "http://www.seinology.com/scripts/script-"
@@ -38,12 +49,37 @@ def extract_lines(soup, character):
     return lines
 
 
+def extract_episode_num(url):
+    num = url.split('-')[1].split('.')[0]
+    if 'and' in num:
+        num = num.split('and')[0]
+    return int(num)
+
+
 def make_df(soup, character, episode):
-    """IN PROGRESS"""
-    lines = extract_lines()
-    return
+    lines = extract_lines(soup, character)
+    df = pd.DataFrame(lines, columns=['lines'])
+    df['character'] = character
+    df['episode'] = episode
+    return df
+
+
+def extract_seasons(episode, season_dict=SEASONS):
+    for season in season_dict.keys():
+        if episode in season_dict[season]:
+            return season
 
 
 if __name__ == '__main__':
-    urls = make_urls
-
+    combined_df = pd.DataFrame()
+    urls = make_urls()
+    for url in urls:
+        episode = extract_episode_num(url)
+        print(episode)
+        season = extract_seasons(episode)
+        soup = scrape_script(url)
+        for character in CHARACTERS:
+            lines = extract_lines(soup, character)
+            df = make_df(soup, character, episode)
+            combined_df = combined_df.append(df)
+    combined_df.to_csv('all_lines.csv')
