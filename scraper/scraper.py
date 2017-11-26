@@ -56,11 +56,12 @@ def extract_episode_num(url):
     return int(num)
 
 
-def make_df(soup, character, episode):
+def make_df(soup, character, episode, season):
     lines = extract_lines(soup, character)
-    df = pd.DataFrame(lines, columns=['lines'])
-    df['character'] = character
-    df['episode'] = episode
+    df = (pd.DataFrame(lines, columns=['lines'])
+          .assign(character=character)
+          .assign(episode=episode)
+          .assign(season=season))
     return df
 
 
@@ -80,6 +81,6 @@ if __name__ == '__main__':
         soup = scrape_script(url)
         for character in CHARACTERS:
             lines = extract_lines(soup, character)
-            df = make_df(soup, character, episode)
+            df = make_df(soup, character, episode, season)
             combined_df = combined_df.append(df)
     combined_df.to_csv('all_lines.csv')
