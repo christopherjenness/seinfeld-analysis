@@ -16,12 +16,16 @@ def load_data():
 
 
 def count_lines(df):
-    line_count_df = df.groupby(['season', 'character'], as_index=False)['lines'].count()
+    line_count_df = df.groupby(['season', 'character'],
+                               as_index=False)['lines'].count()
     season_totals = line_count_df.groupby('season')['lines'].sum()
-    line_count_df = line_count_df.merge(pd.DataFrame(season_totals), left_on='season', right_index=True)
+    line_count_df = line_count_df.merge(pd.DataFrame(season_totals),
+                                        left_on='season',
+                                        right_index=True)
     line_count_df.columns = ['season', 'character', 'lines',
                              'season_lines']
-    line_count_df['percent_lines'] = line_count_df['lines'] / line_count_df['season_lines']
+    line_count_df['percent_lines'] = (line_count_df['lines'] /
+                                      line_count_df['season_lines'])
     return line_count_df
 
 
@@ -33,7 +37,7 @@ def plot_character_usage(line_count_df):
         y = character_df['percent_lines']
         plt.scatter(x, y, label=character.title())
         plt.plot(x, y, label='_nolegend_')
-    plt.ylabel('Percent of Lines')
+    plt.ylabel('Fraction of Lines')
     plt.xlabel('Season')
     plt.legend()
     plt.title('Character usage over time', loc='left')
@@ -59,25 +63,32 @@ def analyze_sentiment(df):
 
 def episode_negativity(df):
     line_count_df = df.groupby(['episode'], as_index=False)['lines'].count()
-    negativity_count_df = df.groupby(['episode'], as_index=False)['Negative'].sum()
+    negativity_count_df = df.groupby(['episode'],
+                                     as_index=False)['Negative'].sum()
     merge_df = line_count_df.merge(negativity_count_df)
     merge_df['percent_neg'] = merge_df['Negative'] / line_count_df['lines']
     return merge_df
 
 
 def character_episode_negativity(df):
-    line_count_df = df.groupby(['season', 'character'], as_index=False)['lines'].count()
-    negativity_count_df = df.groupby(['season', 'character'], as_index=False)['Negative'].sum()
+    line_count_df = df.groupby(['season', 'character'],
+                               as_index=False)['lines'].count()
+    negativity_count_df = df.groupby(['season', 'character'],
+                                     as_index=False)['Negative'].sum()
     merge_df = line_count_df.merge(negativity_count_df)
-    merge_df['percent_neg'] = merge_df['Negative'] / line_count_df['lines']
+    merge_df['percent_neg'] = (merge_df['Negative'] /
+                               line_count_df['lines'])
     return merge_df
 
 
 def character_episode_positivity(df):
-    line_count_df = df.groupby(['season', 'character'], as_index=False)['lines'].count()
-    positivity_count_df = df.groupby(['season', 'character'], as_index=False)['Positive'].sum()
+    line_count_df = df.groupby(['season', 'character'],
+                               as_index=False)['lines'].count()
+    positivity_count_df = df.groupby(['season', 'character'],
+                                     as_index=False)['Positive'].sum()
     merge_df = line_count_df.merge(positivity_count_df)
-    merge_df['percent_neg'] = merge_df['Positive'] / line_count_df['lines']
+    merge_df['percent_neg'] = (merge_df['Positive'] /
+                               line_count_df['lines'])
     return merge_df
 
 
@@ -90,10 +101,12 @@ def plot_character_mood(df, character):
     plt.scatter(x, y, label=character.title())
     plt.plot(x, y, label='_nolegend_')
     plt.xlabel('Season')
-    plt.ylabel('Percent of lines with positive sentiment')
-    plt.title("{character}'s mood over time".format(character=character.title()),
+    plt.ylabel('Fraction of lines with positive sentiment')
+    plt.title(("{character}'s mood over time"
+               .format(character=character.title())),
               loc='left')
-    plt.savefig("../plots/{character}_mood".format(character=character.lower()))
+    plt.savefig(("../plots/{character}_mood"
+                 .format(character=character.lower())))
 
 
 def plot_word_frequency(df, words, category):
@@ -108,7 +121,7 @@ def plot_word_frequency(df, words, category):
         for index in new_indices[0]:
             indices.append(index)
 
-    ax = sns.distplot(indices, rug=True, hist=False)
+    sns.distplot(indices, rug=True, hist=False)
     plt.xlim(0, len(allwords))
     plt.ylabel("{category} word frequency".format(category=category))
     plt.xlabel("Time (words)")
