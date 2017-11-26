@@ -11,7 +11,7 @@ How do the characters's usage change over time?  Over nine seasons of Seinfeld, 
 
 ![usage](plots/character_usage.png)
 
-Seinfeld is known for having a dark outlook on life.  But what is the most negative episode of all time?  **The Baby Shower**.  This is an episode where everything goes wrong: Jerry's TV has bad reception, George wants to confront the performance artist who poured bosco on his shirt, Elaine's baby shower get's crashed by Russians.
+Seinfeld is known for having a dark outlook on life.  But what is the most negative episode of all time?  Here, we used [Vader](http://www.nltk.org/_modules/nltk/sentiment/vader.html), a parsimonious rule-based model for sentiment analysis. **The Baby Shower** is the most negative Seinfeld episode.  This is an episode where everything goes wrong: Jerry's TV has bad reception, George wants to confront the performance artist who poured bosco on his shirt, Elaine's baby shower get's crashed by Russians.
 
 ![negativity](imgs/negative_episodes.jpg)
 
